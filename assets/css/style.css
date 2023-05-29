@@ -1,0 +1,38 @@
+@font-face {
+  display: swap;
+  font-style: normal;
+  font-family: 'Noto Sans Arabic';
+  font-weight: 100 900;
+  src: url('../fonts/NotoSansArabic.ttf') format('truetype');
+}
+
+@font-face {
+  display: swap;
+  font-style: normal;
+  font-family: 'UthmanTN';
+  font-weight: 100 900;
+  src: url('../fonts/UthmanTN.ttf') format('truetype');
+}
+
+html,
+body {
+  font-family: 'Noto Sans Arabic', sans-serif;
+}
+
+hgroup {
+  margin-bottom: 3rem;
+}
+
+article {
+  text-align: center;
+  font-size: 1.5rem;
+  font-family: 'UthmanTN', sans-serif;
+}
+
+article .end::before {
+  content: '﴿';
+}
+
+article .end::after {
+  content: '﴾';
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>تسميع القرآن الكريم</title>
+
+  <link rel="stylesheet" href="assets/css/pico.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+  <main class="container">
+    <hgroup>
+      <h2>تسميع القرآن الكريم</h2>
+      <h3>إختر سورة البداية والنهاية لعرض سؤال عشوائي</h3>
+    </hgroup>
+
+    <form>
+      <div class="grid">
+        <label>
+          من السورة
+          <select name="from"></select>
+        </label>
+
+        <label>
+          إلى السورة
+          <select name="to"></select>
+        </label>
+      </div>
+
+      <button type="submit">اختبرني</button>
+    </form>
+
+    <article>
+      بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
+    </article>
+  </main>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service worker registered:', registration);
+        })
+        .catch(error => {
+          console.error('Error registering service worker:', error);
+        });
+    }
+  </script>
+
+  <script src="assets/js/script.js"></script>
+</body>
+
+</html>
