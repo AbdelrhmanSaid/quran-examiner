@@ -499,7 +499,10 @@ submit.addEventListener('click', async (e) => {
 
   await fetch(`https://api.quran.com/api/v4/quran/verses/uthmani_tajweed?verse_key=${chapter}:${verse}`)
     .then((res) => res.json())
-    .then((data) => (article.innerHTML = data.verses[0].text_uthmani_tajweed))
+    .then((data) => {
+      article.innerHTML = data.verses[0].text_uthmani_tajweed;
+      article.innerHTML += `<p class="info">${chapters[chapter - 1].name} - ${verse}</p>`
+    })
 
   article.classList.remove('hidden')
   article.setAttribute('aria-busy', false)
