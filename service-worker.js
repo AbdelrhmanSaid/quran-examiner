@@ -1,27 +1,6 @@
 // Service worker version
 const version = 'v1'
 
-// Files to cache
-const filesToCache = [
-  '/',
-  '/index.html',
-  '/assets/css/pico.min.css',
-  '/assets/css/style.css',
-  '/assets/fonts/NotoSansArabic.ttf',
-  '/assets/fonts/UthmanTN.ttf',
-  '/assets/js/script.js',
-]
-
-// Event: Install
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches
-      .open(version)
-      .then((cache) => cache.addAll(filesToCache))
-      .then(() => self.skipWaiting()),
-  )
-})
-
 // Event: Activate
 self.addEventListener('activate', (event) => {
   event.waitUntil(
