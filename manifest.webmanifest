@@ -3,7 +3,7 @@
     "background_color": "#1f2d38",
     "display": "standalone",
     "scope": "/",
-    "start_url": "/",
+    "start_url": "/quran-examiner/",
     "name": "Quran Examiner",
     "short_name": "QuranExaminer",
     "icons": [
