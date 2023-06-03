@@ -486,11 +486,6 @@ submit.addEventListener('click', async (e) => {
   const start = parseInt(from.value)
   const end = parseInt(to.value)
 
-  if (start > end || !start || !end) {
-    alert('برجاء اختيار سورة نهاية تقع بعد سورة البداية')
-    return
-  }
-
   article.innerHTML = ''
   article.setAttribute('aria-busy', true)
 
