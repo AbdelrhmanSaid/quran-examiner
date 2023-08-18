@@ -455,50 +455,50 @@ const chapters = [
     name: 'الناس',
     count: 6,
   },
-]
+];
 
-const from = document.querySelector('[name=from]')
-const to = document.querySelector('[name=to]')
-const submit = document.querySelector('[type=submit]')
-const article = document.querySelector('article')
+const from = document.querySelector('[name=from]');
+const to = document.querySelector('[name=to]');
+const submit = document.querySelector('[type=submit]');
+const article = document.querySelector('article');
 
 /* Populate chapters to the desired inputs */
 document.addEventListener('DOMContentLoaded', () => {
-  ;[from, to].forEach((target) => {
+  [from, to].forEach((target) => {
     chapters.forEach((chapter, index) => {
-      const option = document.createElement('option')
+      const option = document.createElement('option');
 
-      option.value = (index + 1).toString()
-      option.innerText = chapter.name
-      option.setAttribute('ayah-count', chapter.count)
+      option.value = (index + 1).toString();
+      option.innerText = chapter.name;
+      option.setAttribute('ayah-count', chapter.count);
 
-      target.appendChild(option)
-    })
-  })
+      target.appendChild(option);
+    });
+  });
 
-  document.querySelector('[name=to]').value = 114
-})
+  document.querySelector('[name=to]').value = 114;
+});
 
 /* Get random ayah between the start and end chapters */
 submit.addEventListener('click', async (e) => {
-  e.preventDefault()
+  e.preventDefault();
 
-  const start = parseInt(from.value)
-  const end = parseInt(to.value)
+  const start = parseInt(from.value);
+  const end = parseInt(to.value);
 
-  article.innerHTML = ''
-  article.setAttribute('aria-busy', true)
+  article.innerHTML = '';
+  article.setAttribute('aria-busy', true);
 
-  const chapter = Math.floor(Math.random() * (end - start + 1) + start)
-  const verse = Math.floor(Math.random() * chapters[chapter - 1].count + 1)
+  const chapter = Math.floor(Math.random() * (end - start + 1) + start);
+  const verse = Math.floor(Math.random() * chapters[chapter - 1].count + 1);
 
   await fetch(`https://api.quran.com/api/v4/quran/verses/uthmani_tajweed?verse_key=${chapter}:${verse}`)
     .then((res) => res.json())
     .then((data) => {
       article.innerHTML = data.verses[0].text_uthmani_tajweed;
-      article.innerHTML += `<p class="info">${chapters[chapter - 1].name} - ${verse}</p>`
-    })
+      article.innerHTML += `<p class="info">${chapters[chapter - 1].name} - ${verse}</p>`;
+    });
 
-  article.classList.remove('hidden')
-  article.setAttribute('aria-busy', false)
-})
+  article.classList.remove('hidden');
+  article.setAttribute('aria-busy', false);
+});
