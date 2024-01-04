@@ -457,14 +457,31 @@ const chapters = [
   },
 ];
 
-const from = document.querySelector('[name=from]');
-const to = document.querySelector('[name=to]');
-const submit = document.querySelector('[type=submit]');
+const chapterFrom = document.querySelector('[name=chapter_from]');
+const chapterTo = document.querySelector('[name=chapter_to]');
+const verseFrom = document.querySelector('[name=verse_from]');
+const verseTo = document.querySelector('[name=verse_to]');
+const form = document.querySelector('form');
 const article = document.querySelector('article');
+
+/* Update the verse input based on the selected chapter */
+chapterFrom.addEventListener('change', () => {
+  verseFrom.value = 1;
+  verseFrom.setAttribute('max', chapters[chapterFrom.value - 1].count);
+
+  localStorage.setItem('chapter_from', chapterFrom.value);
+});
+
+chapterTo.addEventListener('change', () => {
+  verseTo.value = chapters[chapterTo.value - 1].count;
+  verseTo.setAttribute('max', chapters[chapterTo.value - 1].count);
+
+  localStorage.setItem('chapter_to', chapterTo.value);
+});
 
 /* Populate chapters to the desired inputs */
 document.addEventListener('DOMContentLoaded', () => {
-  [from, to].forEach((target) => {
+  [chapterFrom, chapterTo].forEach((target) => {
     chapters.forEach((chapter, index) => {
       const option = document.createElement('option');
 
@@ -476,21 +493,43 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  document.querySelector('[name=to]').value = 114;
+  chapterFrom.value = localStorage.getItem('chapter_from') || 1;
+  chapterTo.value = localStorage.getItem('chapter_to') || 114;
+
+  [chapterFrom, chapterTo].forEach((target) => {
+    target.dispatchEvent(new Event('change'));
+  });
 });
 
 /* Get random ayah between the start and end chapters */
-submit.addEventListener('click', async (e) => {
+form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const start = parseInt(from.value);
-  const end = parseInt(to.value);
+  const chapterStart = parseInt(chapterFrom.value);
+  const chapterEnd = parseInt(chapterTo.value);
+  const verseStart = parseInt(verseFrom.value);
+  const verseEnd = parseInt(verseTo.value);
+
+  if (verseStart > chapters[chapterStart - 1].count || verseEnd > chapters[chapterEnd - 1].count || verseStart > verseEnd) {
+    alert('Please make sure the verse range is correct');
+    return;
+  }
 
   article.innerHTML = '';
   article.setAttribute('aria-busy', true);
 
-  const chapter = Math.floor(Math.random() * (end - start + 1) + start);
-  const verse = Math.floor(Math.random() * chapters[chapter - 1].count + 1);
+  const chapter = Math.floor(Math.random() * (chapterEnd - chapterStart + 1)) + chapterStart;
+  let verse;
+
+  if (chapter === chapterStart && chapter === chapterEnd) {
+    verse = Math.floor(Math.random() * (verseEnd - verseStart + 1)) + verseStart;
+  } else if (chapter === chapterStart) {
+    verse = Math.floor(Math.random() * (chapters[chapter - 1].count - verseStart + 1)) + verseStart;
+  } else if (chapter === chapterEnd) {
+    verse = Math.floor(Math.random() * (verseEnd - 1 + 1)) + 1;
+  } else {
+    verse = Math.floor(Math.random() * (chapters[chapter - 1].count - 1 + 1)) + 1;
+  }
 
   await fetch(`https://api.quran.com/api/v4/quran/verses/uthmani_tajweed?verse_key=${chapter}:${verse}`)
     .then((res) => res.json())
