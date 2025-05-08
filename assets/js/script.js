@@ -464,6 +464,7 @@ const verseTo = document.querySelector('[name=verse_to]');
 const verseCount = document.querySelector('[name=verse_count]');
 const form = document.querySelector('form');
 const article = document.querySelector('article');
+const loadQuranButton = document.querySelector('.load-quran');
 
 /* Update the verse input based on the selected chapter */
 chapterFrom.addEventListener('change', () => {
@@ -500,6 +501,25 @@ document.addEventListener('DOMContentLoaded', () => {
   [chapterFrom, chapterTo].forEach((target) => {
     target.dispatchEvent(new Event('change'));
   });
+
+  if (!localStorage.getItem('quran-loaded')) {
+    loadQuranButton.removeAttribute('hidden');
+  }
+});
+
+/* Load the Quran */
+loadQuranButton.addEventListener('click', async () => {
+  loadQuranButton.setAttribute('aria-busy', true);
+
+  for (let i = 1; i <= 114; i++) {
+    await fetch(`https://api.alquran.cloud/v1/surah/${i}`);
+  }
+
+  loadQuranButton.setAttribute('aria-busy', false);
+  localStorage.setItem('quran-loaded', true);
+
+  loadQuranButton.innerText = 'تم التحميل';
+  loadQuranButton.setAttribute('disabled', true);
 });
 
 /* Get random ayah between the start and end chapters */
@@ -527,6 +547,11 @@ form.addEventListener('submit', async (e) => {
   const chapter = Math.floor(Math.random() * (chapterEnd - chapterStart + 1)) + chapterStart;
   let verse;
 
+  // Get the chapter verses
+  let verses = await fetch(`https://api.alquran.cloud/v1/surah/${chapter}`);
+  verses = await verses.json();
+  verses = verses.data.ayahs;
+
   if (chapter === chapterStart && chapter === chapterEnd) {
     verse = Math.floor(Math.random() * (verseEnd - count - verseStart + 1)) + verseStart;
   } else if (chapter === chapterStart) {
@@ -539,17 +564,10 @@ form.addEventListener('submit', async (e) => {
 
   for (let i = 0; i < count; i++) {
     // Early return if the verse does not exist
-    if (verse > chapters[chapter - 1].count) return;
+    if (verse > chapters[chapter - 1].count) break;
 
-    await fetch(`https://api.quran.com/api/v4/quran/verses/uthmani?verse_key=${chapter}:${verse}`)
-      .then((res) => res.json())
-      .then((data) => {
-        // Early return if the verse is not found
-        if (data.verses.length === 0) return;
-
-        article.innerHTML += `<span class="ayah">${data.verses[0].text_uthmani}</span>`;
-        article.innerHTML += `<span class="end">${verse}</span>`;
-      });
+    article.innerHTML += `<span class="ayah">${verses[verse - 1].text}</span>`;
+    article.innerHTML += `<span class="end">${verse}</span>`;
 
     // Increment the verse number
     verse++;

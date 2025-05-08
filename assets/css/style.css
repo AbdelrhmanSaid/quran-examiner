@@ -50,3 +50,8 @@ article .end::after {
   content: '﴾';
   margin-inline-end: 10px;
 }
+
+.load-quran {
+  max-width: 200px;
+  margin: 0 auto;
+}
