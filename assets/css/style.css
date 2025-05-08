@@ -35,7 +35,7 @@ article[aria-busy="true"] .ayah {
 
 article .ayah:not(:first-child) {
   margin-inline-start: 5px;
-  filter: blur(10px);
+  filter: blur(5px);
   cursor: pointer;
 }
 

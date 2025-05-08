@@ -528,19 +528,16 @@ form.addEventListener('submit', async (e) => {
   let verse;
 
   if (chapter === chapterStart && chapter === chapterEnd) {
-    verse = Math.floor(Math.random() * (verseEnd - verseStart + 1)) + verseStart;
+    verse = Math.floor(Math.random() * (verseEnd - count - verseStart + 1)) + verseStart;
   } else if (chapter === chapterStart) {
     verse = Math.floor(Math.random() * (chapters[chapter - 1].count - verseStart + 1)) + verseStart;
   } else if (chapter === chapterEnd) {
-    verse = Math.floor(Math.random() * (verseEnd - 1 + 1)) + 1;
+    verse = Math.floor(Math.random() * (verseEnd - count - 1 + 1)) + 1;
   } else {
     verse = Math.floor(Math.random() * (chapters[chapter - 1].count - 1 + 1)) + 1;
   }
 
   for (let i = 0; i < count; i++) {
-    // Early return if the verse isn't within the range
-    if (verse > verseEnd) break;
-
     await fetch(`https://api.quran.com/api/v4/quran/verses/uthmani_tajweed?verse_key=${chapter}:${verse}`)
       .then((res) => res.json())
       .then((data) => {
