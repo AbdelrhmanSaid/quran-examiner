@@ -537,12 +537,10 @@ form.addEventListener('submit', async (e) => {
     verse = Math.floor(Math.random() * (chapters[chapter - 1].count - 1 + 1)) + 1;
   }
 
-  // Set verse to verse - count if the verse is greater than the chapter count
-  if (verse + count > chapters[chapter - 1].count) {
-    verse = chapters[chapter - 1].count - count;
-  }
-
   for (let i = 0; i < count; i++) {
+    // Early return if the verse isn't within the range
+    if (verse > verseEnd) break;
+
     await fetch(`https://api.quran.com/api/v4/quran/verses/uthmani_tajweed?verse_key=${chapter}:${verse}`)
       .then((res) => res.json())
       .then((data) => {

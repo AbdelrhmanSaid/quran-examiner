@@ -60,21 +60,6 @@
     </article>
   </main>
 
-  <script>
-    const host = window.location.host;
-    const locals = ['localhost', '127.0.0.1'];
-
-    if ('serviceWorker' in navigator && !locals.some(local => host.includes(local))) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(registration => {
-          console.log('Service worker registered:', registration);
-        })
-        .catch(error => {
-          console.error('Error registering service worker:', error);
-        });
-    }
-  </script>
-
   <script src="assets/js/script.js"></script>
 </body>
 
