@@ -461,6 +461,7 @@ const chapterFrom = document.querySelector('[name=chapter_from]');
 const chapterTo = document.querySelector('[name=chapter_to]');
 const verseFrom = document.querySelector('[name=verse_from]');
 const verseTo = document.querySelector('[name=verse_to]');
+const verseCount = document.querySelector('[name=verse_count]');
 const form = document.querySelector('form');
 const article = document.querySelector('article');
 
@@ -509,8 +510,13 @@ form.addEventListener('submit', async (e) => {
   const chapterEnd = parseInt(chapterTo.value);
   const verseStart = parseInt(verseFrom.value);
   const verseEnd = parseInt(verseTo.value);
+  const count = parseInt(verseCount.value);
 
-  if (verseStart > chapters[chapterStart - 1].count || verseEnd > chapters[chapterEnd - 1].count || verseStart > verseEnd) {
+  if (
+    verseStart > chapters[chapterStart - 1].count ||
+    verseEnd > chapters[chapterEnd - 1].count ||
+    verseStart > verseEnd
+  ) {
     alert('Please make sure the verse range is correct');
     return;
   }
@@ -531,13 +537,34 @@ form.addEventListener('submit', async (e) => {
     verse = Math.floor(Math.random() * (chapters[chapter - 1].count - 1 + 1)) + 1;
   }
 
-  await fetch(`https://api.quran.com/api/v4/quran/verses/uthmani_tajweed?verse_key=${chapter}:${verse}`)
-    .then((res) => res.json())
-    .then((data) => {
-      article.innerHTML = data.verses[0].text_uthmani_tajweed;
-      article.innerHTML += `<p class="info">${chapters[chapter - 1].name} - ${verse}</p>`;
-    });
+  // Set verse to verse - count if the verse is greater than the chapter count
+  if (verse + count > chapters[chapter - 1].count) {
+    verse = chapters[chapter - 1].count - count;
+  }
 
-  article.classList.remove('hidden');
+  for (let i = 0; i < count; i++) {
+    await fetch(`https://api.quran.com/api/v4/quran/verses/uthmani_tajweed?verse_key=${chapter}:${verse}`)
+      .then((res) => res.json())
+      .then((data) => {
+        // Early return if the verse is not found
+        if (data.verses.length === 0) return;
+
+        article.innerHTML += `<span class="ayah">${data.verses[0].text_uthmani_tajweed}</span>`;
+      });
+
+    // Increment the verse number
+    verse++;
+  }
+
+  // Add the info to the article
+  article.innerHTML += `<p class="info">${chapters[chapter - 1].name} - ${verse - count}:${verse - 1}</p>`;
+
   article.setAttribute('aria-busy', false);
+
+  // Add event listener to the ayah
+  article.addEventListener('click', (e) => {
+    if (e.target.classList.contains('ayah') && !e.target.classList.contains('active')) {
+      e.target.classList.add('active');
+    }
+  });
 });
