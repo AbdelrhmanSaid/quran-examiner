@@ -538,13 +538,17 @@ form.addEventListener('submit', async (e) => {
   }
 
   for (let i = 0; i < count; i++) {
-    await fetch(`https://api.quran.com/api/v4/quran/verses/uthmani_tajweed?verse_key=${chapter}:${verse}`)
+    // Early return if the verse does not exist
+    if (verse > chapters[chapter - 1].count) return;
+
+    await fetch(`https://api.quran.com/api/v4/quran/verses/uthmani?verse_key=${chapter}:${verse}`)
       .then((res) => res.json())
       .then((data) => {
         // Early return if the verse is not found
         if (data.verses.length === 0) return;
 
-        article.innerHTML += `<span class="ayah">${data.verses[0].text_uthmani_tajweed}</span>`;
+        article.innerHTML += `<span class="ayah">${data.verses[0].text_uthmani}</span>`;
+        article.innerHTML += `<span class="end">${verse}</span>`;
       });
 
     // Increment the verse number
